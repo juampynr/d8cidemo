@@ -6,25 +6,16 @@ version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      #- image: juampynr/d8cidemo:latest
-      - image: d8cidemo
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mysql:9.4
+      - image: juampynr/d8cidemo:latest
 
-    working_directory: ~/repo
+    working_directory: /var/www/html
 
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "composer.json" }}
-          # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
       - run: robo add:coding-standards-deps
@@ -33,9 +24,13 @@ jobs:
 
       - run: robo update:dependencies
 
-      - run: sleep 50000
-
       - run: robo setup:drupal admin admin
+
+      - run:
+          name: Run tests
+          command: |
+            cd web
+            ../vendor/bin/phpunit -c core --debug modules/custom
 
       - save_cache:
           paths:

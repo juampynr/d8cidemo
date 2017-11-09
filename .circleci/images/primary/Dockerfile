@@ -11,6 +11,9 @@ RUN apt-get install -y wget
 RUN wget https://raw.githubusercontent.com/composer/getcomposer.org/f3333f3bc20ab8334f7f3dada808b8dfbfc46088/web/installer -O - -q | php -- --quiet
 RUN mv composer.phar /usr/local/bin/composer
 
+# Put a turbo on composer.
+RUN composer global require hirak/prestissimo
+
 # Install phantomjs.
 RUN apt-get install -y curl bzip2 libfontconfig
 RUN cd '/opt' && curl -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar xjvf -
