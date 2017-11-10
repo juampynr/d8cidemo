@@ -10,20 +10,20 @@ default:
     Behat\MinkExtension:
       goutte: ~
       selenium2: ~
-      base_url: http://d8cidemo.localhost
+      base_url: http://localhost
       sessions:
         default:
           goutte: ~
         javascript:
           selenium2:
-            browser: chrome
+            browser: phantomjs
     Drupal\DrupalExtension:
       blackbox: ~
       api_driver: 'drupal'
       drush:
         alias: 'local'
       drupal:
-        drupal_root: '/var/www/drupal/d8cidemo/web'
+        drupal_root: '/var/www/html'
       region_map:
         footer: "#footer"
       selectors:

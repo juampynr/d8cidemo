@@ -38,8 +38,10 @@ jobs:
 
       - run: cp .circleci/config/phpunit.xml web/core
 
+      - run: cp .circleci/config/behat.yml tests/
+
       - run:
-          name: Run tests
+          name: Unit and Kernel tests
           command: |
             cd web
             ../vendor/bin/phpunit -c core --verbose --debug modules/custom
