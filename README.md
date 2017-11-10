@@ -31,6 +31,10 @@ Full docs at https://behat-drupal-extension.readthedocs.io/en/3.1/localinstall.h
 
 ### Setup
 
+#### Install Drupal
+
+Install Drupal as usual. Follow instructions at https://www.drupal.org/docs/8/install.
+
 #### Download Selenium Standalone Server
 
 Open http://www.seleniumhq.org/download and download it to a sub-directory of your home directory.
@@ -51,6 +55,9 @@ run `sudo mv /tmp/chromedriver /usr/local/bin`.
     cd /path/to/composer.json
     composer require --dev drupal/drupal-extension:master-dev
 ```
+
+#### Adjust Behat settings file
+Open [tests/behat.yml](tests/behat.yml) and check that `base_url` and `drupal_root` are correct.
 
 ### Run tests
 ```bash

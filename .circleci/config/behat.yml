@@ -17,6 +17,7 @@ default:
         javascript:
           selenium2:
             browser: phantomjs
+            wd_host: http://localhost:8910/wd/hub
     Drupal\DrupalExtension:
       blackbox: ~
       api_driver: 'drupal'
