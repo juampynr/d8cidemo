@@ -70,7 +70,7 @@ Open [tests/behat.yml](tests/behat.yml) and check that `base_url` and `drupal_ro
  
 ## CI with CircleCI
 
-Sample job run: https://circleci.com/gh/juampynr/d8cidemo/11
+Sample job run: https://circleci.com/gh/juampynr/d8cidemo/19
 
 The brains of the CircleCI integration are at the [CircleCI configuration file](.circleci/config.yml), which
 orchestrates what should happen when something is pushed to the repository.
