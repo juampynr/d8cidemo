@@ -72,5 +72,23 @@ Open [tests/behat.yml](tests/behat.yml) and check that `base_url` and `drupal_ro
 
 Sample job run: https://circleci.com/gh/juampynr/d8cidemo/11
 
+The brains of the CircleCI integration are at the [CircleCI configuration file](.circleci/config.yml), which
+orchestrates what should happen when something is pushed to the repository.
+
+`.circleci/config.yml` uses a container for MariaDB, another one for PhantomJS (used for
+Behat tests) and a [custom image for setting up the Drupal environment](.circleci/images/primary/Dockerfile).
+
+### Runing the CI jobs locally
+
+Install the CircleCI command line interface at https://circleci.com/docs/2.0/local-jobs/. Then
+clone this repository and run the job with `circleci build`.
+
+### Running the CI jobs in CircleCI
+
+Sign up with GitHub at https://circleci.com/signup/ and then allow access to your fork of
+this repository. Then either trigger a build manually, push a change or
+create a pull request to trigger the build job. Then see the results at
+https://circleci.com/dashboard.
+
 ## Links
 - An overview of testing in Drupal 8

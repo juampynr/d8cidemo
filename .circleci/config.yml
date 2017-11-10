@@ -55,4 +55,5 @@ jobs:
           name: Behat tests
           command: |
             cd web
+            apache2-foreground&
             ../vendor/bin/behat --verbose -c ../tests/behat.yml
