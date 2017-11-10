@@ -34,6 +34,11 @@ jobs:
 
       - run: robo update:dependencies
 
+      - save_cache:
+          paths:
+            - ./vendor
+          key: v1-dependencies-{{ checksum "composer.json" }}
+
       - run: robo setup:drupal admin admin
 
       - run: cp .circleci/config/phpunit.xml web/core
@@ -46,7 +51,8 @@ jobs:
             cd web
             ../vendor/bin/phpunit -c core --verbose --debug modules/custom
 
-      - save_cache:
-          paths:
-            - ./vendor
-          key: v1-dependencies-{{ checksum "composer.json" }}
+      - run:
+          name: Behat tests
+          command: |
+            cd web
+            ../vendor/bin/behat --verbose -c ../tests/behat.yml
