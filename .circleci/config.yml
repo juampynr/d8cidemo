@@ -8,6 +8,10 @@ jobs:
     docker:
       - image: juampynr/d8cidemo:latest
 
+      - image: mariadb:10.3
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 1
+
     working_directory: /var/www/html
 
     steps:
@@ -32,7 +36,7 @@ jobs:
           name: Run tests
           command: |
             cd web
-            ../vendor/bin/phpunit -c core --debug modules/custom
+            ../vendor/bin/phpunit -c core --verbose --debug modules/custom
 
       - save_cache:
           paths:

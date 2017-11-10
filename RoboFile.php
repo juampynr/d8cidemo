@@ -25,7 +25,7 @@ class RoboFile extends \Robo\Tasks
     /**
      * The database URL.
      */
-    const DB_URL = 'sqlite://sites/default/files/.ht.sqlite';
+    const DB_URL = 'mysql://root@127.0.0.1/drupal8';
 
     /**
      * Adds coding standard dependencies.

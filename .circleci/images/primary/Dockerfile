@@ -1,6 +1,6 @@
 FROM php:7.0-apache
 
-# Change docroot since we use Composer Drupal project
+# Change docroot since we use Composer Drupal project.
 RUN sed -ri -e 's!/var/www/html!/var/www/html/web!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www!/var/www/html/web!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
@@ -12,7 +12,12 @@ RUN apt-get update && apt-get install -y \
     unzip \
     vim \
     wget \
-    zip
+    zip \
+    && \
+    docker-php-ext-install \
+    mysqli \
+    pdo \
+    pdo_mysql
 
 # Install composer.
 RUN wget https://raw.githubusercontent.com/composer/getcomposer.org/f3333f3bc20ab8334f7f3dada808b8dfbfc46088/web/installer -O - -q | php -- --quiet
@@ -29,6 +34,6 @@ RUN ln -s /opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin
 RUN pecl install xdebug-2.5.5 \
     && docker-php-ext-enable xdebug
 
-# Install Robo CI
+# Install Robo CI.
 RUN wget http://robo.li/robo.phar
 RUN chmod +x robo.phar && mv robo.phar /usr/local/bin/robo
