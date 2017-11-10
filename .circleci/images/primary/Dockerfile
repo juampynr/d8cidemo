@@ -9,17 +9,21 @@ RUN apt-get update && apt-get install -y \
     curl \
     git \
     libfontconfig \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libmcrypt-dev \
+    libpng-dev \
     mariadb-client \
     unzip \
     vim \
     wget \
     zip \
-    && \
-    docker-php-ext-install \
-    gd \
-    mysqli \
-    pdo \
-    pdo_mysql
+    && docker-php-ext-install -j$(nproc) iconv mcrypt \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install mysqli \
+    && docker-php-ext-install pdo \
+    && docker-php-ext-install pdo_mysql
 
 # Install composer.
 RUN wget https://raw.githubusercontent.com/composer/getcomposer.org/f3333f3bc20ab8334f7f3dada808b8dfbfc46088/web/installer -O - -q | php -- --quiet
