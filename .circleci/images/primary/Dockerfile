@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     git \
     libfontconfig \
+    mariadb-client \
     unzip \
     vim \
     wget \
@@ -25,10 +26,6 @@ RUN mv composer.phar /usr/local/bin/composer
 
 # Put a turbo on composer.
 RUN composer global require hirak/prestissimo
-
-# Install phantomjs.
-RUN cd '/opt' && curl -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar xjvf -
-RUN ln -s /opt/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin
 
 # Install XDebug.
 RUN pecl install xdebug-2.5.5 \

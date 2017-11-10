@@ -12,6 +12,12 @@ jobs:
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: 1
 
+      # Use Andrew's phantomjs fork until https://github.com/wernight/docker-phantomjs/pull/3 is
+      # merged.
+      # - image: wernight/phantomjs:2.1.1
+      - image: andrewberry/docker-phantomjs:v2.1.1-patch1
+        command: [phantomjs, --webdriver=8910]
+
     working_directory: /var/www/html
 
     steps:
