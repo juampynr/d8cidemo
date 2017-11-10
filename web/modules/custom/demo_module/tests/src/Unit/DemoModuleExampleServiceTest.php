@@ -46,7 +46,7 @@ class DemoModuleExampleServiceTest extends TestCase {
   }
 
   /**
-   * @covers ::getLastNode()
+   * @covers ::getLastNode
    */
   public function testGetLastNode() {
     /** @var \Prophecy\Prophecy\ObjectProphecy $query_interface */
