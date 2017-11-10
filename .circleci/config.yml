@@ -26,6 +26,8 @@ jobs:
 
       - run: robo setup:drupal admin admin
 
+      - run: cp .circleci/config/phpunit.xml web/core
+
       - run:
           name: Run tests
           command: |
