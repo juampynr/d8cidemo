@@ -1,10 +1,14 @@
 # Drupal 8 testing and CI demo
 
-This repository contains:
+This is a demo repository for running PHPUnit and Behat tests in Drupal 8 projects. It contains:
 
 - A demo module with a [unit and kernel test](web/modules/custom/demo_module/tests/src).
 - A demo [Behat test](tests).
 - CircleCI integration to run the above [on every pull request](https://circleci.com/gh/juampynr/d8cidemo).
+
+
+If you want to test and individul module and not a whole Drupal site, see
+[drupal_tests](https://github.com/deviantintegral/drupal_tests).
 
 ## Unit and Kernel tests
 
