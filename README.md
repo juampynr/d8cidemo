@@ -1,3 +1,5 @@
+# This project has been moved to https://github.com/juampynr/drupal8ci
+
 # Drupal 8 testing and CI demo
 
 This is a demo repository for running PHPUnit and Behat tests in Drupal 8 projects. It contains:
