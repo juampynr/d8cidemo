@@ -1,8 +1,9 @@
-# This project has been moved to https://github.com/juampynr/drupal8ci
-
 # Drupal 8 testing and CI demo
 
-This is a demo repository for running PHPUnit and Behat tests in Drupal 8 projects. It contains:
+This is a working demo that integrates CircleCI with a Drupal 8 site using
+the installation script from https://github.com/juampynr/drupal8ci.
+
+It contains:
 
 - A demo module with a [unit and kernel test](web/modules/custom/demo_module/tests/src).
 - A demo [Behat test](tests).
