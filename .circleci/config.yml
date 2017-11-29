@@ -84,7 +84,7 @@ behat_tests: &behat_tests
           robo update:dependencies
           robo setup:drupal || true
           cp .circleci/config/behat.yml tests/
-          chown -R www-data:www-data /var/www/html/sites/default/files
+          chown -R www-data:www-data /var/www/html/web/sites/default/files
           ../vendor/bin/behat --verbose -c ../tests/behat.yml
 
     - store_test_results:
