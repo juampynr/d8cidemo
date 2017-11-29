@@ -103,7 +103,6 @@ code_sniffer: &code_sniffer
 
     - run:
         command: |
-          robo setup:skeleton
           robo add:coding-standards-deps
           robo update:dependencies
 
@@ -131,7 +130,6 @@ code_coverage: &code_coverage
           SIMPLETEST_DB: "sqlite://localhost//tmp/drupal.sqlite"
           BROWSERTEST_OUTPUT_DIRECTORY: "/var/www/html/sites/simpletest"
         command: |
-          robo setup:skeleton
           robo update:dependencies
           cp .circleci/config/phpunit.xml web/core/
           cd web
