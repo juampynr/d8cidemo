@@ -173,7 +173,7 @@ class RoboFile extends \Robo\Tasks
         return $this->taskPhpUnit('vendor/bin/phpunit')
           ->option('verbose')
           ->option('debug')
-          ->configFile('core')
+          ->configFile('web/core')
           ->group($module);
     }
 

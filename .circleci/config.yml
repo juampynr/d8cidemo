@@ -132,8 +132,7 @@ code_coverage: &code_coverage
         command: |
           robo update:dependencies
           cp .circleci/config/phpunit.xml web/core/
-          cd web
-          timeout 60m sudo -E -u www-data robo test:coverage modules/custom artifacts || true
+          timeout 60m sudo -E -u www-data robo test:coverage web/modules/custom artifacts || true
           tar czf artifacts/coverage.tar.gz -C artifacts coverage-html coverage-xml
 
     - store_artifacts:
