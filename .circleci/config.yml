@@ -133,8 +133,11 @@ code_coverage: &code_coverage
           BROWSERTEST_OUTPUT_DIRECTORY: "/var/www/html/sites/simpletest"
         command: |
           robo update:dependencies
+          robo setup:drupal || true
           cp .circleci/config/phpunit.xml web/core/
-          timeout 60m sudo -E -u www-data vendor/bin/phpunit --verbose --debug -c web/core --coverage-xml artifacts/coverage-xml --coverage-html artifacts/coverage-html web/modules/custom
+          mkdir -p artifacts/coverage-xml
+          mkdir -p artifacts/coverage-html
+          timeout 60m sudo -E -u www-data vendor/bin/phpunit --verbose --debug -c web/core --coverage-xml ../artifacts/coverage-xml --coverage-html ../artifacts/coverage-html web/modules/custom
           tar czf artifacts/coverage.tar.gz -C artifacts coverage-html coverage-xml
 
     - store_artifacts:
