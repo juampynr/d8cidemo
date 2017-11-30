@@ -138,6 +138,7 @@ code_coverage: &code_coverage
           cp .circleci/config/phpunit.xml web/core/
           mkdir -p artifacts/coverage-xml
           mkdir -p artifacts/coverage-html
+          chmod -R 777 artifacts
           timeout 60m sudo -E -u www-data vendor/bin/phpunit --verbose --debug -c web/core --coverage-xml ../artifacts/coverage-xml --coverage-html ../artifacts/coverage-html web/modules/custom
           tar czf artifacts/coverage.tar.gz -C artifacts coverage-html coverage-xml
 
