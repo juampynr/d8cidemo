@@ -92,7 +92,7 @@ behat_tests: &behat_tests
     - store_artifacts:
         path: /var/www/html/artifacts
 
-# Run code quality tests. This invokes code-sniffer.sh.
+# Run code quality tests.
 code_sniffer: &code_sniffer
   <<: *defaults
   steps:
@@ -132,7 +132,7 @@ code_coverage: &code_coverage
         command: |
           robo update:dependencies
           cp .circleci/config/phpunit.xml web/core/
-          timeout 60m sudo -E -u www-data robo test:coverage web/modules/custom artifacts || true
+          timeout 60m sudo -E -u www-data vendor/bin/phpunit --verbose --debug -c web/core --coverage-xml artifacts/coverage-xml --coverage-html artifacts/coverage-html web/modules/custom
           tar czf artifacts/coverage.tar.gz -C artifacts coverage-html coverage-xml
 
     - store_artifacts:

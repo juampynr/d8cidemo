@@ -33,7 +33,7 @@ class RoboFile extends \Robo\Tasks
     public function addCodingStandardsDeps()
     {
         $config = json_decode(file_get_contents('composer.json'));
-        $config->require->{"drupal/coder"} = "^2.0|^8.2";
+        $config->require->{"drupal/coder"} = "^8.2";
         file_put_contents('composer.json', json_encode($config));
     }
 
@@ -136,23 +136,6 @@ class RoboFile extends \Robo\Tasks
     public function test($module)
     {
         $this->phpUnit($module)
-          ->run();
-    }
-
-    /**
-     * Run tests with code coverage reports.
-     *
-     * @param string $module
-     *   The module name.
-     * @param string $report_output_path
-     *   The full path of the report to generate.
-     */
-    public function testCoverage($module, $report_output_path)
-    {
-        $this->phpUnit($module)
-          ->option('coverage-xml', $report_output_path . '/coverage-xml')
-          ->option('coverage-html', $report_output_path . '/coverage-html')
-          ->option('testsuite', 'unit')
           ->run();
     }
 
