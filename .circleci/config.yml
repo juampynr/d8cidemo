@@ -61,8 +61,9 @@ unit_kernel_tests: &unit_kernel_tests
           robo update:dependencies
           robo setup:drupal || true
           cp .circleci/config/phpunit.xml web/core/
+          mkdir -p artifacts/phpunit
           cd web
-          sudo -E -u www-data ../vendor/bin/phpunit -c core --debug --verbose --log-junit artifacts/phpunit/phpunit.xml modules/custom
+          sudo -E -u www-data ../vendor/bin/phpunit -c core --debug --verbose --log-junit ../artifacts/phpunit/phpunit.xml modules/custom
     - store_test_results:
         path: /var/www/html/artifacts/phpunit
     - store_artifacts:
@@ -85,7 +86,7 @@ behat_tests: &behat_tests
           robo setup:drupal || true
           cp .circleci/config/behat.yml tests/
           chown -R www-data:www-data /var/www/html/web/sites/default/files
-          ../vendor/bin/behat --verbose -c ../tests/behat.yml
+          vendor/bin/behat --verbose -c tests/behat.yml
 
     - store_test_results:
         path: /var/www/html/artifacts/behat
