@@ -108,7 +108,9 @@ code_sniffer: &code_sniffer
 
           # Install dependencies and configure phpcs
           vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer web/modules/custom
+          mkdir -p artifacts/phpcs
           vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
+          vendor/bin/phpcs --standard=DrupalPractice --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
 
     - store_test_results:
         path: /var/www/html/artifacts/phpcs
