@@ -59,10 +59,10 @@ unit_kernel_tests: &unit_kernel_tests
         command: |
           apache2-foreground&
           robo update:dependencies
+          robo setup:drupal || true
           cp .circleci/config/phpunit.xml web/core/
           cd web
           sudo -E -u www-data ../vendor/bin/phpunit -c core --debug --verbose --log-junit artifacts/phpunit/phpunit.xml modules/custom
-
     - store_test_results:
         path: /var/www/html/artifacts/phpunit
     - store_artifacts:
