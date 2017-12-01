@@ -141,7 +141,7 @@ code_coverage: &code_coverage
           mkdir -p artifacts/coverage-html
           chmod -R 777 artifacts
           cd web
-          timeout 60m sudo -E -u www-data ../vendor/bin/phpunit --verbose --debug -c core --coverage-xml ../artifacts/coverage-xml --coverage-html ../artifacts/coverage-html 00
+          timeout 60m sudo -E -u www-data ../vendor/bin/phpunit --verbose --debug -c core --coverage-xml ../artifacts/coverage-xml --coverage-html ../artifacts/coverage-html --testsuite nonfunctional
           cd ../
           tar czf artifacts/coverage.tar.gz -C artifacts coverage-html coverage-xml
 
