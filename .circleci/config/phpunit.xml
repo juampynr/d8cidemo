@@ -51,11 +51,11 @@
   </listeners>
   <!-- Filter for coverage reports. -->
   <filter>
-    <whitelist>
-      <directory>modules/custom</directory>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory>../modules/custom</directory>
       <!-- By definition test classes have no tests. -->
       <exclude>
-        <directory>modules/custom/*/tests</directory>
+        <directory>../modules/custom/*/tests</directory>
       </exclude>
     </whitelist>
   </filter>
