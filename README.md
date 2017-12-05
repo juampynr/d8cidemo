@@ -11,8 +11,11 @@ It contains:
 
 - A demo module with a [unit and kernel test](web/modules/custom/demo_module/tests/src).
 - A demo [Behat test](tests).
-- CircleCI integration to run the above [on every pull request](https://circleci.com/gh/juampynr/d8cidemo).
+- [CircleCI integration](https://circleci.com/gh/juampynr/d8cidemo) so the following jobs run on every push:
+  * Run unit and kernel tests.
+  * Run Behat tests.
+  * Build a code coverage report.
+  * Check Drupal coding standards and best practices.
 
-
-If you want to test and individul module and not a whole Drupal site, see
+If you want to test and individual module and not a whole Drupal site, see
 [drupal_tests](https://github.com/deviantintegral/drupal_tests).
