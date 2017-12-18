@@ -59,6 +59,9 @@ behat_tests: &behat_tests
     - checkout
     - restore_cache: *restore_cache
     - run:
+        name: Wait for the database service to be ready
+        command: dockerize -wait tcp://localhost:5432 -timeout 1m
+    - run:
         name: Install database and run the update path
         command: |
           robo install:dependencies
@@ -69,9 +72,6 @@ behat_tests: &behat_tests
           drush config-import -y -v
           cd ..
     - save_cache: *save_cache
-    - run:
-        name: Wait for the database service to be ready
-        command: dockerize -wait tcp://localhost:5432 -timeout 1m
     - run:
         name: Set up and run Behat tests
         command: |
