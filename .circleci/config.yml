@@ -1,22 +1,18 @@
 # Runs a set of CI jobs for Drupal 8 projects.
-#
-# Check https://circleci.com/docs/2.0/language-php/ for more details
-#
 
+# Reusable steps.
 defaults: &defaults
   docker:
     - image: juampynr/drupal8ci:latest
-
     - image: selenium/standalone-chrome-debug:3.7.1-beryllium
-
     - image: mariadb:10.3
       environment:
         MYSQL_ALLOW_EMPTY_PASSWORD: 1
 
   working_directory: /var/www/html
 
-# We use the composer.json as a way to determine if we can cache our build.
 restore_cache: &restore_cache
+  # We use the composer.json as a way to determine if we can cache our build.
   keys:
   - v1-dependencies-{{ checksum "composer.json" }}
   # fallback to using the latest cache if no exact match is found
@@ -29,19 +25,17 @@ save_cache: &save_cache
     - ./vendor
   key: v1-dependencies-{{ checksum "composer.json" }}
 
+# Job to run Unit and Kernel tests.
 unit_kernel_tests: &unit_kernel_tests
   <<: *defaults
   steps:
     - checkout
-
     - restore_cache: *restore_cache
-    - save_cache: *save_cache
-
     - run:
         name: Set up and run tests
         command: |
           apache2-foreground&
-          robo update:dependencies
+          robo install:dependencies
           robo setup:drupal || true
           cp .circleci/config/phpunit.xml web/core/
           mkdir -p artifacts/phpunit
@@ -52,72 +46,62 @@ unit_kernel_tests: &unit_kernel_tests
         path: /var/www/html/artifacts/phpunit
     - store_artifacts:
         path: /var/www/html/artifacts
+    - save_cache: *save_cache
 
+# Job to run the update path and Behat tests.
 behat_tests: &behat_tests
   <<: *defaults
   steps:
     - checkout
-
-    - run:
-        name: Add dependencies
-        command: |
-          robo add:behat-deps
-
     - restore_cache: *restore_cache
+    - run:
+        name: Install database and run the update path
+        command: |
+          robo install:dependencies
+          cd web
+          robo setup:drupal || true
+          curl $DB_DUMP_URL | drush sql-cli
+          drush updatedb -y -v
+          drush config-import -y -v
     - save_cache: *save_cache
-
     - run:
         name: Set up and run tests
         command: |
           apache2-foreground&
-          robo update:dependencies
-          robo setup:drupal || true
           cp .circleci/config/behat.yml tests/
           chown -R www-data:www-data /var/www/html/web/sites/default/files
           vendor/bin/behat --verbose -c tests/behat.yml
-
     - store_test_results:
         path: /var/www/html/artifacts/behat
     - store_artifacts:
         path: /var/www/html/artifacts
 
+# Job to check coding standards.
 code_sniffer: &code_sniffer
   <<: *defaults
   steps:
     - checkout
-
-    - run:
-        name: Add dependencies
-        command: |
-          robo add:coding-standards-deps
-
     - restore_cache: *restore_cache
-    - save_cache: *save_cache
-
     - run:
         name: Set up and run tests
         command: |
-          robo update:dependencies
+          robo install:dependencies
           vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer web/modules/custom
           mkdir -p artifacts/phpcs
-
           vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
           vendor/bin/phpcs --standard=DrupalPractice --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
-
     - store_test_results:
         path: /var/www/html/artifacts/phpcs
     - store_artifacts:
         path: /var/www/html/artifacts
+    - save_cache: *save_cache
 
-# Run code coverage tests. This invokes code-coverage-stats.sh.
+# Job to check test coverage.
 code_coverage: &code_coverage
   <<: *defaults
   steps:
     - checkout
-
     - restore_cache: *restore_cache
-    - save_cache: *save_cache
-
     - run:
         environment:
           SIMPLETEST_BASE_URL: "http://localhost"
@@ -134,9 +118,9 @@ code_coverage: &code_coverage
           timeout 60m sudo -E -u www-data ../vendor/bin/phpunit --verbose --debug -c core --coverage-xml ../artifacts/coverage-xml --coverage-html ../artifacts/coverage-html --testsuite nonfunctional modules/custom
           cd ../
           tar czf artifacts/coverage.tar.gz -C artifacts coverage-html coverage-xml
-
     - store_artifacts:
         path: /var/www/html/artifacts
+    - save_cache: *save_cache
 
 # Declare all of the jobs we should run.
 version: 2
@@ -150,10 +134,9 @@ jobs:
   run-code-coverage:
      <<: *code_coverage
 
+# Declare a workflow that runs all of our jobs in parallel.
 workflows:
   version: 2
-
-  # Declare a workflow that runs all of our jobs in parallel.
   test_and_lint:
     jobs:
       - run-unit-kernel-tests
