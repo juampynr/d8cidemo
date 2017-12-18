@@ -67,7 +67,8 @@ behat_tests: &behat_tests
           robo install:dependencies
           robo setup:drupal || true
           cd web
-          curl $DB_DUMP_URL | ../vendor/bin/drush sql-cli
+          wget -O dump.sql $DB_DUMP_URL
+          ../vendor/bin/drush sql-cli < dump.sql
           ../vendor/bin/drush updatedb -y -v
           ../vendor/bin/drush config-import -y -v
           cd ..
