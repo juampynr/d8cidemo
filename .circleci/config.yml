@@ -60,7 +60,7 @@ behat_tests: &behat_tests
     - restore_cache: *restore_cache
     - run:
         name: Wait for the database service to be ready
-        command: dockerize -wait tcp://localhost:5432 -timeout 1m
+        command: dockerize -wait tcp://localhost:3306 -timeout 1m
     - run:
         name: Install database and run the update path
         command: |
