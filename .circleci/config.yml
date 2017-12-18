@@ -67,9 +67,9 @@ behat_tests: &behat_tests
           robo install:dependencies
           robo setup:drupal || true
           cd web
-          curl $DB_DUMP_URL | drush sql-cli
-          drush updatedb -y -v
-          drush config-import -y -v
+          curl $DB_DUMP_URL | ../vendor/bin/drush sql-cli
+          ../vendor/bin/drush updatedb -y -v
+          ../vendor/bin/drush config-import -y -v
           cd ..
     - save_cache: *save_cache
     - run:
