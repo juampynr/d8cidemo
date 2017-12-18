@@ -58,8 +58,8 @@ behat_tests: &behat_tests
         name: Install database and run the update path
         command: |
           robo install:dependencies
-          cd web
           robo setup:drupal || true
+          cd web
           curl $DB_DUMP_URL | drush sql-cli
           drush updatedb -y -v
           drush config-import -y -v
