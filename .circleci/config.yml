@@ -32,7 +32,7 @@ unit_kernel_tests: &unit_kernel_tests
     - checkout
     - restore_cache: *restore_cache
     - run:
-        name: Set up and run tests
+        name: Set up and run Unit and Kernel tests
         command: |
           apache2-foreground&
           robo install:dependencies
@@ -63,9 +63,10 @@ behat_tests: &behat_tests
           curl $DB_DUMP_URL | drush sql-cli
           drush updatedb -y -v
           drush config-import -y -v
+          cd ..
     - save_cache: *save_cache
     - run:
-        name: Set up and run tests
+        name: Set up and run Behat tests
         command: |
           apache2-foreground&
           cp .circleci/config/behat.yml tests/
@@ -83,7 +84,7 @@ code_sniffer: &code_sniffer
     - checkout
     - restore_cache: *restore_cache
     - run:
-        name: Set up and run tests
+        name: Set up and inspect coding standards
         command: |
           robo install:dependencies
           vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer web/modules/custom
@@ -103,6 +104,7 @@ code_coverage: &code_coverage
     - checkout
     - restore_cache: *restore_cache
     - run:
+        name: Set up and inspect code coverage
         environment:
           SIMPLETEST_BASE_URL: "http://localhost"
           SIMPLETEST_DB: "sqlite://localhost//tmp/drupal.sqlite"
