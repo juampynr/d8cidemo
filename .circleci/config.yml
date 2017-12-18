@@ -1,18 +1,20 @@
 # Runs a set of CI jobs for Drupal 8 projects.
 
 # Reusable steps.
+## Defines images and working directory.
 defaults: &defaults
   docker:
     - image: juampynr/drupal8ci:latest
 
     - image: selenium/standalone-chrome-debug:3.7.1-beryllium
-    
+
     - image: mariadb:10.3
       environment:
         MYSQL_ALLOW_EMPTY_PASSWORD: 1
 
   working_directory: /var/www/html
 
+## Defines the cache restoring mechanism.
 restore_cache: &restore_cache
   # We use the composer.json as a way to determine if we can cache our build.
   keys:
@@ -20,14 +22,14 @@ restore_cache: &restore_cache
   # fallback to using the latest cache if no exact match is found
   - v1-dependencies-
 
-# If composer.json hasn't changed, restore the vendor directory. We don't
-# restore the lock file so we ensure we get updated dependencies.
+## Defines the cache saving mechanism.
 save_cache: &save_cache
   paths:
     - ./vendor
   key: v1-dependencies-{{ checksum "composer.json" }}
 
-# Job to run Unit and Kernel tests.
+#Jobs
+## Job to run Unit and Kernel tests.
 unit_kernel_tests: &unit_kernel_tests
   <<: *defaults
   steps:
@@ -50,7 +52,7 @@ unit_kernel_tests: &unit_kernel_tests
         path: /var/www/html/artifacts
     - save_cache: *save_cache
 
-# Job to run the update path and Behat tests.
+## Job to run the update path and Behat tests.
 behat_tests: &behat_tests
   <<: *defaults
   steps:
@@ -68,6 +70,9 @@ behat_tests: &behat_tests
           cd ..
     - save_cache: *save_cache
     - run:
+        name: Wait for the database service to be ready
+        command: dockerize -wait tcp://localhost:5432 -timeout 1m
+    - run:
         name: Set up and run Behat tests
         command: |
           apache2-foreground&
@@ -79,7 +84,7 @@ behat_tests: &behat_tests
     - store_artifacts:
         path: /var/www/html/artifacts
 
-# Job to check coding standards.
+## Job to check coding standards.
 code_sniffer: &code_sniffer
   <<: *defaults
   steps:
@@ -99,7 +104,7 @@ code_sniffer: &code_sniffer
         path: /var/www/html/artifacts
     - save_cache: *save_cache
 
-# Job to check test coverage.
+## Job to check test coverage.
 code_coverage: &code_coverage
   <<: *defaults
   steps:
