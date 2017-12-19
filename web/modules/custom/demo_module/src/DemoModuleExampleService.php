@@ -3,6 +3,7 @@
 namespace Drupal\demo_module;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * DemoModuleExampleService service.
