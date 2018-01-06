@@ -1,4 +1,4 @@
-# Drupal 8 testing and CI demo
+# Drupal 8 CI demo
 
 [![CircleCI](https://circleci.com/gh/juampynr/d8cidemo.svg?style=svg)](https://circleci.com/gh/juampynr/d8cidemo)
 
