@@ -17,6 +17,8 @@ install:
   - composer --verbose install
 
 script:
+  - pwd
+  - ls
   - cd $TRAVIS_BUILD_DIR/web
   - ./../vendor/bin/drush site-install --verbose --yes --db-url=sqlite://tmp/site.sqlite
   - ./../vendor/bin/drush runserver $SIMPLETEST_BASE_URL &
