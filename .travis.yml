@@ -32,7 +32,6 @@ script:
 
   # Check Drupal's coding standards.
   - vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer
-  - mkdir -p artifacts/phpcs
-  - vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
-  - vendor/bin/phpcs --standard=DrupalPractice --report=junit --report-junit=artifacts/phpcs/phpcs.xml web/modules/custom
+  - vendor/bin/phpcs --standard=Drupal web/modules/custom
+  - vendor/bin/phpcs --standard=DrupalPractice web/modules/custom
 
