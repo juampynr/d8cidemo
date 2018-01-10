@@ -29,7 +29,7 @@ script:
   - ../vendor/bin/phpunit -c core --debug --verbose modules/custom
 
   # Check Drupal's coding standards.
-  - ../vendor/bin/phpcs --config-set installed_paths ../vendor/drupal/coder/coder_sniffer modules/custom
+  - ../vendor/bin/phpcs --config-set installed_paths /home/travis/build/juampynr/d8cidemovendor/drupal/coder/coder_sniffer
   - mkdir -p ../artifacts/phpcs
   - ../vendor/bin/phpcs --standard=Drupal --report=junit --report-junit=../artifacts/phpcs/phpcs.xml modules/custom
   - ../vendor/bin/phpcs --standard=DrupalPractice --report=junit --report-junit=../artifacts/phpcs/phpcs.xml modules/custom
