@@ -15,5 +15,6 @@ Test runs at https://circleci.com/gh/juampynr/d8cidemo.
 ## Travis
 
 [![Build Status](https://travis-ci.org/juampynr/d8cidemo.svg?branch=master)](https://travis-ci.org/juampynr/d8cidemo)
+[![Coverage Status](https://coveralls.io/repos/github/juampynr/d8cidemo/badge.svg)](https://coveralls.io/github/juampynr/d8cidemo)
 
 Test runs at  https://travis-ci.org/juampynr/d8cidemo
