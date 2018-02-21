@@ -1,7 +1,6 @@
 # Drupal 8 CI demo
 
 
-
 This repository serves as a demo for different CI integrations that use the installation
 scripts from https://github.com/lullabot/drupal8ci.
 
