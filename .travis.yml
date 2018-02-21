@@ -35,3 +35,11 @@ script:
   - vendor/bin/phpcs --standard=Drupal web/modules/custom
   - vendor/bin/phpcs --standard=DrupalPractice web/modules/custom
 
+  # Generate coverage report.
+  - cp .travis/config/phpunit.xml web/core/
+  - cd web
+  - ../vendor/bin/phpunit -c core --debug --coverage-clover ../build/logs/clover.xml --verbose modules/custom
+  - cd ..
+
+after_success:
+  - travis_retry php vendor/bin/php-coveralls -v
