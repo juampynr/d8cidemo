@@ -24,18 +24,12 @@ script:
   - until curl -s $DRUPAL_BASE_URL; do true; done > /dev/null
   - cd ..
 
-  # Run unit and kernel tests.
-  - cp .travis/config/phpunit.xml web/core/
-  - cd web
-  - ../vendor/bin/phpunit -c core --debug --verbose modules/custom
-  - cd ..
-
   # Check Drupal's coding standards.
   - vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer
   - vendor/bin/phpcs --standard=Drupal web/modules/custom
   - vendor/bin/phpcs --standard=DrupalPractice web/modules/custom
 
-  # Generate coverage report.
+  # Run Unit and Kernel tests. Generate coverage report.
   - cp .travis/config/phpunit.xml web/core/
   - cd web
   - ../vendor/bin/phpunit -c core --debug --coverage-clover ../build/logs/clover.xml --verbose modules/custom
