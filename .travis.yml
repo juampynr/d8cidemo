@@ -9,12 +9,18 @@ env:
   global:
     - DRUPAL_DB=sqlite://tmp/site.sqlite
     - DRUPAL_BASE_URL="http://127.0.0.1:8080"
+  matrix:
+    - ROBOTASK=check:coding-standards
+    - ROBOTASK=run:unit-tests
 
 before_install:
   - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
 install:
   - composer --verbose install
+
+before_script:
+  - test ROBOTASK=run:unit-tests && vendor/bin/robo setup:drupal
 
 script:
   # Install Drupal and start the web server.
@@ -24,29 +30,8 @@ script:
   - until curl -s $DRUPAL_BASE_URL; do true; done > /dev/null
   - cd ..
 
-  # Check Drupal's coding standards.
-  - vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer
-  - vendor/bin/phpcs --standard=Drupal web/modules/custom
-  - vendor/bin/phpcs --standard=DrupalPractice web/modules/custom
-
-  # Run Unit and Kernel tests. Generate coverage report.
-  - cp .travis/config/phpunit.xml web/core/
-  - cd web
-  - ../vendor/bin/phpunit -c core --debug --coverage-clover ../build/logs/clover.xml --verbose modules/custom
-  - cd ..
-
-  # Run Behat tests
-  - wget https://github.com/ariya/phantomjs/releases/download/2.1.3/phantomjs
-  - chmod +x phantomjs
-  - phantomjs --webdriver=8643 &
-  - cd web
-  - wget -O dump.sql $DB_DUMP_URL
-  - ../vendor/bin/drush sql-cli < dump.sql
-  - ../vendor/bin/drush updatedb -y -v
-  - ../vendor/bin/drush config-import -y -v
-  - cd ..
-  - cp .travis/config/behat.yml tests
-  - vendor/bin/behat --verbose -c tests/behat.yml
+  # Run Robo task.
+  - vendor/bin/robo ./$ROBOTASK
 
 after_success:
-  - travis_retry php vendor/bin/php-coveralls -v
+  - test $SCRIPT = "coverage.sh" && travis_retry php vendor/bin/php-coveralls -v
