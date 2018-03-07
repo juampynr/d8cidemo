@@ -1,6 +1,7 @@
 <?php
 
 // @codingStandardsIgnoreStart
+use Robo\Exception\TaskException;
 
 /**
  * Base tasks for setting up a module to test within a full Drupal environment.
@@ -13,6 +14,11 @@
 class RoboFile extends \Robo\Tasks {
 
   /**
+   * The database URL.
+   */
+  const DB_URL = 'sqlite://tmp/site.sqlite';
+
+  /**
    * RoboFile constructor.
    */
   public function __construct() {
@@ -21,28 +27,19 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
-   * Install Drupal.
-   *
-   * @param string $db_url
-   *   The database URL.
+   * Command to run unit tests.
    */
-  public function installDrupal($db_url) {
-    $task = $this->drush()
-      ->args('site-install')
-      ->option('verbose')
-      ->option('yes')
-      ->option('db-url', $db_url, '=');
-
-    // Sending email will fail, so we need to allow this to always pass.
-    $this->stopOnFail(FALSE);
-    $task->run();
-    $this->stopOnFail();
+  public function jobRunUnitTests() {
+    $collection = $this->collectionBuilder();
+    $collection->addTask($this->installDrupal());
+    $collection->addTaskList($this->runUnitTests());
+    $collection->run();
   }
 
   /**
-   * Checks coding standards.
+   * Command to check coding standards.
    */
-  public function checkCodingStandards() {
+  public function jobCheckCodingStandards() {
     return $this->taskExecStack()
       ->stopOnFail()
       ->exec('vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer')
@@ -52,15 +49,31 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
-   * Runs unit tests.
+   * Install Drupal.
    */
-  public function runUnitTests() {
-    $this->taskFilesystemStack()
-      ->copy('.travis/config/phpunit.xml', 'web/core/');
-    $this->taskExecStack()
+  private function installDrupal() {
+    $db_url = static::DB_URL;
+    $task = $this->drush()
+      ->args('site-install')
+      ->option('verbose')
+      ->option('yes')
+      ->option('db-url', $db_url, '=');
+    return $task;
+  }
+
+  /**
+   * Run unit tests
+   */
+  private function runUnitTests() {
+    $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.travis/config/phpunit.xml', 'web/core/phpunit.xml');
+    $tasks[] = $this->taskExecStack()
       ->dir('web')
       ->exec('../vendor/bin/phpunit -c core --debug --coverage-clover ../build/logs/clover.xml --verbose modules/custom');
+    return $tasks;
   }
+
 
   /**
    * Return drush with default arguments.
@@ -84,38 +97,5 @@ class RoboFile extends \Robo\Tasks {
     $docroot = (getcwd());
     return $docroot;
   }
-
-
-  /**
-   * Run PHPUnit and simpletests for the module.
-   *
-   * @param string $module
-   *   The module name.
-   */
-  public function test($module) {
-    $this->phpUnit($module)
-      ->run();
-  }
-
-  /**
-   * Return a configured phpunit task.
-   *
-   * This will check for PHPUnit configuration first in the module directory.
-   * If no configuration is found, it will fall back to Drupal's core
-   * directory.
-   *
-   * @param string $module
-   *   The module name.
-   *
-   * @return \Robo\Task\Testing\PHPUnit
-   */
-  private function phpUnit($module) {
-    return $this->taskPhpUnit('vendor/bin/phpunit')
-      ->option('verbose')
-      ->option('debug')
-      ->configFile('web/core')
-      ->group($module);
-  }
-
 
 }
