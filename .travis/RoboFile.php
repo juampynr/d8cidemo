@@ -19,6 +19,11 @@ class RoboFile extends \Robo\Tasks {
   const DB_URL = 'sqlite://tmp/site.sqlite';
 
   /**
+   * The website's URL.
+   */
+  const DRUPAL_URL = 'http://127.0.0.1:8080';
+
+  /**
    * RoboFile constructor.
    */
   public function __construct() {
@@ -49,22 +54,43 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
+   * Command to run behat tests.
+   */
+  public function jobRunBehatTests() {
+    $collection = $this->collectionBuilder();
+    $collection->addTask($this->installDrupal());
+    $collection->addTaskList($this->startWebServer());
+    $collection->addTask($this->startBrowser());
+    $collection->addTaskList($this->runBehatTests());
+    $collection->run();
+  }
+
+  /**
    * Install Drupal.
    */
-  private function installDrupal() {
-    $db_url = static::DB_URL;
+  protected function installDrupal() {
     $task = $this->drush()
       ->args('site-install')
       ->option('verbose')
       ->option('yes')
-      ->option('db-url', $db_url, '=');
+      ->option('db-url', static::DB_URL, '=');
     return $task;
+  }
+
+  /**
+   * Starts the web server.
+   */
+  protected function startWebServer() {
+    $tasks = [];
+    $tasks[] = $this->drush()->args(['runserver', static::DRUPAL_URL])->background();
+    $tasks[] = $this->taskExec('until curl -s ' . static::DRUPAL_URL . '; do true; done > /dev/null');
+    return $tasks;
   }
 
   /**
    * Run unit tests
    */
-  private function runUnitTests() {
+  protected function runUnitTests() {
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.travis/config/phpunit.xml', 'web/core/phpunit.xml');
@@ -74,6 +100,24 @@ class RoboFile extends \Robo\Tasks {
     return $tasks;
   }
 
+  /**
+   * Starts the browser.
+   */
+  protected function startBrowser() {
+    return $this->taskExec('phantomjs --webdriver=8643')->background();
+  }
+
+  /**
+   * Runs Behat tests.
+   */
+  protected function runBehatTests() {
+    $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.travis/config/behat.yml', 'tests/behat.yml');
+    $tasks[] = $this->taskExecStack()
+      ->exec('vendor/bin/behat --verbose -c tests/behat.yml');
+    return $tasks;
+  }
 
   /**
    * Return drush with default arguments.
