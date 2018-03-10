@@ -33,16 +33,24 @@ class RoboFile extends \Robo\Tasks {
 
   /**
    * Command to run unit tests.
+   *
+   * @return \Robo\Result
+   *   The result of the collection of tasks.
    */
   public function jobRunUnitTests() {
     $collection = $this->collectionBuilder();
     $collection->addTask($this->installDrupal());
     $collection->addTaskList($this->runUnitTests());
-    $collection->run();
+    return $collection->run();
   }
 
   /**
    * Command to check coding standards.
+   *
+   * @return null|\Robo\Result
+   *   The result of the set of tasks.
+   *
+   * @throws \Robo\Exception\TaskException
    */
   public function jobCheckCodingStandards() {
     return $this->taskExecStack()
@@ -55,6 +63,9 @@ class RoboFile extends \Robo\Tasks {
 
   /**
    * Command to run behat tests.
+   *
+   * @return \Robo\Result
+   *   The resul tof the collection of tasks.
    */
   public function jobRunBehatTests() {
     $collection = $this->collectionBuilder();
@@ -62,11 +73,14 @@ class RoboFile extends \Robo\Tasks {
     $collection->addTaskList($this->startWebServer());
     $collection->addTask($this->startBrowser());
     $collection->addTaskList($this->runBehatTests());
-    $collection->run();
+    return $collection->run();
   }
 
   /**
    * Install Drupal.
+   *
+   * @return \Robo\Task\Base\Exec
+   *   A task to install Drupal.
    */
   protected function installDrupal() {
     $task = $this->drush()
@@ -79,6 +93,9 @@ class RoboFile extends \Robo\Tasks {
 
   /**
    * Starts the web server.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
    */
   protected function startWebServer() {
     $tasks = [];
@@ -88,7 +105,10 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
-   * Run unit tests
+   * Run unit tests.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
    */
   protected function runUnitTests() {
     $tasks = [];
@@ -102,6 +122,9 @@ class RoboFile extends \Robo\Tasks {
 
   /**
    * Starts the browser.
+   *
+   * @return \Robo\Task\Base\Exec
+   *   A task to start the browser.
    */
   protected function startBrowser() {
     return $this->taskExec('phantomjs --webdriver=8643')->background();
@@ -109,11 +132,16 @@ class RoboFile extends \Robo\Tasks {
 
   /**
    * Runs Behat tests.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
    */
   protected function runBehatTests() {
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.travis/config/behat.yml', 'tests/behat.yml');
+    $tasks[] = $this->taskExecStack()
+      ->exec('export BEHAT_PARAMS=\'{"extensions" : {"Drupal\\DrupalExtension" : {"drupal" : {"drupal_root" : "' . getenv('TRAVIS_BUILD_DIR') . '/web"}}}}\'');
     $tasks[] = $this->taskExecStack()
       ->exec('vendor/bin/behat --verbose -c tests/behat.yml');
     return $tasks;
@@ -136,10 +164,10 @@ class RoboFile extends \Robo\Tasks {
    * Get the absolute path to the docroot.
    *
    * @return string
+   *   The document root.
    */
   protected function getDocroot() {
-    $docroot = (getcwd());
-    return $docroot;
+    return (getcwd());
   }
 
 }
