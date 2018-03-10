@@ -141,7 +141,7 @@ class RoboFile extends \Robo\Tasks {
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.travis/config/behat.yml', 'tests/behat.yml');
     $tasks[] = $this->taskExecStack()
-      ->exec('export BEHAT_PARAMS=\'{"extensions" : {"Drupal\\DrupalExtension" : {"drupal" : {"drupal_root" : "' . getenv('TRAVIS_BUILD_DIR') . '/web"}}}}\'');
+      ->exec('export BEHAT_PARAMS=\'{"extensions" : {"Drupal\\DrupalExtension" : {"drupal" : {"drupal_root" : "' . $this->getDocroot() . '/web"}}}}\'');
     $tasks[] = $this->taskExecStack()
       ->exec('vendor/bin/behat --verbose -c tests/behat.yml');
     return $tasks;
