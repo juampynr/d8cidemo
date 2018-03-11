@@ -10,7 +10,7 @@ default:
     Behat\MinkExtension:
       goutte: ~
       selenium2: ~
-      base_url: http://localhost
+      base_url: http://localhost:8080
       sessions:
         default:
           goutte: ~

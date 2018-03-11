@@ -127,7 +127,7 @@ class RoboFile extends \Robo\Tasks {
    *   A task to start the browser.
    */
   protected function startBrowser() {
-    return $this->taskExec('phantomjs --webdriver=8643')->background();
+    return $this->taskExec('phantomjs --webdriver=8643 &');
   }
 
   /**
@@ -141,9 +141,7 @@ class RoboFile extends \Robo\Tasks {
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.travis/config/behat.yml', 'tests/behat.yml');
     $tasks[] = $this->taskExecStack()
-      ->exec('export BEHAT_PARAMS=\'{"extensions" : {"Drupal\\DrupalExtension" : {"drupal" : {"drupal_root" : "' . $this->getDocroot() . '/web"}}}}\'');
-    $tasks[] = $this->taskExecStack()
-      ->exec('vendor/bin/behat --verbose -c tests/behat.yml');
+      ->exec('BEHAT_PARAMS=\'{"extensions" : {"Drupal\\\\DrupalExtension" : {"drupal" : {"drupal_root" : "' . $this->getDocroot() . '/web"}}}}\' && vendor/bin/behat --verbose -c tests/behat.yml');
     return $tasks;
   }
 
