@@ -99,7 +99,7 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function startWebServer() {
     $tasks = [];
-    $tasks[] = $this->taskExec('vendor/bin/drush --root=' . $this->getDocroot() . '/web runserver ' . static::DRUPAL_URL . ' &');
+    $tasks[] = $this->taskExec('vendor/bin/drush --root=' . $this->getDocroot() . '/web runserver ' . static::DRUPAL_URL . ' &')->silent(TRUE);
     $tasks[] = $this->taskExec('until curl -s ' . static::DRUPAL_URL . '; do true; done > /dev/null');
     return $tasks;
   }
