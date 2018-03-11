@@ -70,7 +70,7 @@ class RoboFile extends \Robo\Tasks {
   public function jobRunBehatTests() {
     $collection = $this->collectionBuilder();
     $collection->addTask($this->installDrupal());
-    $collection->addTask($this->startWebServer());
+    $collection->addTaskList($this->startWebServer());
     $collection->addTask($this->startBrowser());
     $collection->addTaskList($this->runBehatTests());
     return $collection->run();
@@ -94,14 +94,14 @@ class RoboFile extends \Robo\Tasks {
   /**
    * Starts the web server.
    *
-   * @return \Robo\Task\Base\ExecStack
-   *   A task with commands to run.
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
    */
   protected function startWebServer() {
-    return $this->taskExecStack()
-      ->stopOnFail(FALSE)
-      ->exec('vendor/bin/drush --root=' . $this->getDocroot() . '/web runserver http://127.0.0.1:8080')->background()
-      ->exec('until curl -s ' . static::DRUPAL_URL . '; do true; done > /dev/null');
+    $tasks = [];
+    $tasks[] = $this->taskExec('vendor/bin/drush --root=' . $this->getDocroot() . '/web runserver ' . static::DRUPAL_URL . ' &');
+    $tasks[] = $this->taskExec('until curl -s ' . static::DRUPAL_URL . '; do true; done > /dev/null');
+    return $tasks;
   }
 
   /**
