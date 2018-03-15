@@ -185,6 +185,8 @@ class RoboFile extends \Robo\Tasks {
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.travis/config/behat.yml', 'tests/behat.yml');
+    // @TODO Find a better way to wait for docker to sync the above.
+    $tasks[] = $this->taskExec('sleep 5s');
     $tasks[] = $this->taskExecStack()
       ->exec('docker-compose exec -T php vendor/bin/behat --verbose -c tests/behat.yml');
     return $tasks;
