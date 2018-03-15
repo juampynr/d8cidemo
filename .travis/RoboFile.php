@@ -21,7 +21,7 @@ class RoboFile extends \Robo\Tasks {
   /**
    * The website's URL.
    */
-  const DRUPAL_URL = 'http://127.0.0.1:8080';
+  const DRUPAL_URL = 'http://drupal.docker.localhost:8000';
 
   /**
    * RoboFile constructor.
@@ -69,11 +69,54 @@ class RoboFile extends \Robo\Tasks {
    */
   public function jobRunBehatTests() {
     $collection = $this->collectionBuilder();
-    $collection->addTask($this->installDrupal());
-    $collection->addTaskList($this->startWebServer());
-    $collection->addTask($this->startBrowser());
+    $collection->addTaskList($this->downloadDatabase());
+    $collection->addTaskList($this->buildEnvironment());
+    $collection->addTask($this->waitForDrupal());
     $collection->addTaskList($this->runBehatTests());
     return $collection->run();
+  }
+
+  /**
+   * Download's database to use within a Docker environment.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  protected function downloadDatabase() {
+    $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->mkdir('mariadb-init');
+    $tasks[] = $this->taskExec('wget ' . getenv('DB_DUMP_URL'))
+      ->dir('mariadb-init');
+    return $tasks;
+  }
+
+  /**
+   * Builds the Docker environment.
+   *
+   * @return \Robo\Task\Base\Exec[]
+   *   An array of tasks.
+   */
+  protected function buildEnvironment() {
+    $tasks = [];
+    $tasks[] = $this->taskFilesystemStack()
+      ->copy('.travis/docker-compose.yml', 'docker-compose.yml')
+      ->copy('.travis/traefik.yml', 'traefik.yml')
+      ->copy('.travis/.env', '.env')
+      ->copy('.travis/config/settings.local.php', 'web/sites/default/settings.local.php');
+    $tasks[] = $this->taskExec('docker-compose pull --parallel');
+    $tasks[] = $this->taskExec('docker-compose up -d');
+    return $tasks;
+  }
+
+  /**
+   * Waits for Drupal to accept requests.
+   *
+   * @return \Robo\Task\Base\Exec
+   *   A task to check that Drupal is ready.
+   */
+  protected function waitForDrupal() {
+    return $this->taskExec('sleep 15s');
   }
 
   /**
@@ -141,7 +184,7 @@ class RoboFile extends \Robo\Tasks {
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.travis/config/behat.yml', 'tests/behat.yml');
     $tasks[] = $this->taskExecStack()
-      ->exec('BEHAT_PARAMS=\'{"extensions" : {"Drupal\\\\DrupalExtension" : {"drupal" : {"drupal_root" : "' . $this->getDocroot() . '/web"}}}}\' && vendor/bin/behat --verbose -c tests/behat.yml');
+      ->exec('docker-compose exec -T php vendor/bin/behat --verbose -c tests/behat.yml');
     return $tasks;
   }
 

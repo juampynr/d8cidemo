@@ -10,18 +10,21 @@ default:
     Behat\MinkExtension:
       goutte: ~
       selenium2: ~
-      base_url: http://localhost:8080
+      base_url: http://apache
       sessions:
         default:
           goutte: ~
         javascript:
           selenium2:
-            wd_host: "http://localhost:8643/wd/hub"
+            browser: chrome
+            wd_host: http://chrome:4444/wd/hub
     Drupal\DrupalExtension:
       blackbox: ~
       api_driver: 'drupal'
       drush:
         alias: 'local'
+      drupal:
+        drupal_root: '/var/www/html/web'
       region_map:
         footer: "#footer"
       selectors:
