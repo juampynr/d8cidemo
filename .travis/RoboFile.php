@@ -112,6 +112,8 @@ class RoboFile extends \Robo\Tasks {
   /**
    * Waits for Drupal to accept requests.
    *
+   * @TODO Find an efficient way to wait for Drupal.
+   *
    * @return \Robo\Task\Base\Exec
    *   A task to check that Drupal is ready.
    */

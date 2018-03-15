@@ -1,6 +1,9 @@
 language: php
 dist: trusty
-sudo: false
+sudo: required
+
+services:
+  - docker
 
 php:
   - 7.1
