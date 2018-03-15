@@ -103,7 +103,8 @@ class RoboFile extends \Robo\Tasks {
       ->copy('.travis/docker-compose.yml', 'docker-compose.yml')
       ->copy('.travis/traefik.yml', 'traefik.yml')
       ->copy('.travis/.env', '.env')
-      ->copy('.travis/config/settings.local.php', 'web/sites/default/settings.local.php');
+      ->copy('.travis/config/settings.local.php', 'web/sites/default/settings.local.php')
+      ->copy('web/sites/default/default.settings.php', 'web/sites/default/settings.php');
     $tasks[] = $this->taskExec('docker-compose pull --parallel');
     $tasks[] = $this->taskExec('docker-compose up -d');
     return $tasks;
