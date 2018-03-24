@@ -99,13 +99,13 @@ class RoboFile extends \Robo\Tasks {
    */
   protected function buildEnvironment() {
     $tasks = [];
+    $force = TRUE;
     $tasks[] = $this->taskFilesystemStack()
       ->copy('.travis/docker-compose.yml', 'docker-compose.yml')
       ->copy('.travis/traefik.yml', 'traefik.yml')
       ->copy('.travis/.env', '.env')
       ->copy('.travis/config/settings.local.php', 'web/sites/default/settings.local.php')
-      ->copy('web/sites/default/default.settings.php', 'web/sites/default/settings.php')
-      ->copy('.travis/config/behat.yml', 'tests/behat.yml');
+      ->copy('.travis/config/behat.yml', 'tests/behat.yml', $force);
 
     $tasks[] = $this->taskExec('docker-compose pull --parallel');
     $tasks[] = $this->taskExec('docker-compose up -d');
