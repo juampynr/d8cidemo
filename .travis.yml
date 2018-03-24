@@ -1,6 +1,9 @@
 language: php
 dist: trusty
-sudo: false
+sudo: required
+
+services:
+  - docker
 
 php:
   - 7.1
@@ -11,6 +14,7 @@ env:
   matrix:
     - JOB=job:check-coding-standards
     - JOB=job:run-unit-tests
+    - JOB=job:run-behat-tests
 
 before_install:
   - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
@@ -18,8 +22,10 @@ before_install:
 install:
   - composer --verbose install
 
-script:
+before_script:
   - cp .travis/RoboFile.php .
+
+script:
   - vendor/bin/robo $JOB
 
 after_success:
