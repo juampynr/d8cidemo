@@ -98,13 +98,13 @@ class RoboFile extends \Robo\Tasks {
    *   An array of tasks.
    */
   protected function buildEnvironment() {
-    $tasks = [];
     $force = TRUE;
+    $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
-      ->copy('.travis/docker-compose.yml', 'docker-compose.yml')
-      ->copy('.travis/traefik.yml', 'traefik.yml')
-      ->copy('.travis/.env', '.env')
-      ->copy('.travis/config/settings.local.php', 'web/sites/default/settings.local.php')
+      ->copy('.travis/docker-compose.yml', 'docker-compose.yml', $force)
+      ->copy('.travis/traefik.yml', 'traefik.yml', $force)
+      ->copy('.travis/.env', '.env', $force)
+      ->copy('.travis/config/settings.local.php', 'web/sites/default/settings.local.php', $force)
       ->copy('.travis/config/behat.yml', 'tests/behat.yml', $force);
 
     $tasks[] = $this->taskExec('docker-compose pull --parallel');
@@ -159,9 +159,10 @@ class RoboFile extends \Robo\Tasks {
    *   An array of tasks.
    */
   protected function runUnitTests() {
+    $force = TRUE;
     $tasks = [];
     $tasks[] = $this->taskFilesystemStack()
-      ->copy('.travis/config/phpunit.xml', 'web/core/phpunit.xml');
+      ->copy('.travis/config/phpunit.xml', 'web/core/phpunit.xml', $force);
     $tasks[] = $this->taskExecStack()
       ->dir('web')
       ->exec('../vendor/bin/phpunit -c core --debug --coverage-clover ../build/logs/clover.xml --verbose modules/custom');
