@@ -121,7 +121,7 @@ class RoboFile extends \Robo\Tasks {
    *   A task to check that Drupal is ready.
    */
   protected function waitForDrupal() {
-    return $this->taskExec('sleep 15s');
+    return $this->taskExec('sleep 30s');
   }
 
   /**
