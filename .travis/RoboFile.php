@@ -169,16 +169,6 @@ class RoboFile extends \Robo\Tasks {
   }
 
   /**
-   * Starts the browser.
-   *
-   * @return \Robo\Task\Base\Exec
-   *   A task to start the browser.
-   */
-  protected function startBrowser() {
-    return $this->taskExec('phantomjs --webdriver=8643 &');
-  }
-
-  /**
    * Runs Behat tests.
    *
    * @return \Robo\Task\Base\Exec[]
