@@ -1,21 +1,11 @@
-# Drupal 8 CI demo
+# Obsolete
 
-This repository serves as a demo for different CI integrations that use the installation
-scripts from https://github.com/lullabot/drupal8ci.
+This Drupal 8 project started with a CircleCI integration but then after adding
+a Travis CI integration it started to become confusing maintaining the two of them
+so new demos are being created.
 
-If you want to test and individual module instead of a Drupal project, check out
-[drupal_tests](https://github.com/deviantintegral/drupal_tests).
+For Drupal 8 and CircleCI, check out https://github.com/juampynr/drupal8-circleci.
 
-## CircleCI
-
-[![CircleCI](https://circleci.com/gh/juampynr/d8cidemo.svg?style=svg)](https://circleci.com/gh/juampynr/d8cidemo)
-
-Test runs at https://circleci.com/gh/juampynr/d8cidemo.
-
-## Travis
-
-[![Build Status](https://travis-ci.org/juampynr/d8cidemo.svg?branch=master)](https://travis-ci.org/juampynr/d8cidemo)
-[![Coverage Status](https://coveralls.io/repos/github/juampynr/d8cidemo/badge.svg)](https://coveralls.io/github/juampynr/d8cidemo)
-
-Test runs at  https://travis-ci.org/juampynr/d8cidemo
-
+For Drupal 8 and Travis CI, you will be interested in looking at the `.travis.yml`
+file and the `.travis` directory of this repository. We will move this to a
+new repository as we did for CircleCI.
